@@ -1,0 +1,75 @@
+;; Storage
+;;
+;; counter_contract_code
+
+int workchain() asm "0 PUSHINT";
+
+() force_chain(slice addr) impure {
+  (int wc, _) = parse_std_addr(addr);
+  throw_unless(333, wc == workchain());
+}
+
+(cell) load_data() {
+    slice ds = get_data().begin_parse();
+    return (
+        ds~load_ref() ;; counter_contract_code
+    );
+} 
+
+() mint_new_counter(admin_addr, amount) {
+
+    cell data = 
+        begin_cell()
+            .store_slice(admin_addr) ;; admin_addr
+            .store_uint(0, 64) ;; counter_num
+        .end_cell();
+
+    var counter_contract_code = load_data()
+
+
+    cell state_init = 
+        begin_cell()
+            .store_uint(0, 2)
+            .store_dict(counter_contract_code)
+            .store_dict(data)
+            .store_uint(0, 1)
+        .end_cell();
+
+    slice new_counter_addr = 
+        begin_cell()
+            .store_uint(4, 3)
+            .store_int(workchain(), 8)
+            .store_uint(cell_hash(state_init), 256)
+        .end_cell()
+        .begin_parse();
+    
+    var msg = 
+        begin_cell()
+            .store_uint(0x18, 6)
+            .store_slice(new_counter_addr)
+            .store_coins(amount)
+            .store_uint(4 + 2 + 1, 1 + 4 + 4 + 64 + 32 + 1 + 1 + 1)
+            .store_ref(state_init)
+        .end_cell();
+    
+    send_raw_message(msg, send_mode);
+}
+
+
+() recv_internal(cell in_msg_full, slice in_msg_body) impure {
+
+    slice cs = in_msg_full.begin_parse();
+
+    int flags = cs~load_uint(4);
+    if (flags & 1) { ;; ignore all bounced messages
+        return (); ;; terminate contract execution
+    }
+
+    slice sender_address = cs~load_msg_addr();
+    force_chain(sender_address); ;; check workchain = 0
+
+    ;; check amount sufficient for deployment
+
+    mint_new_counter();; mint new counter
+
+}
