@@ -70,6 +70,6 @@ int workchain() asm "0 PUSHINT";
 
     ;; check amount sufficient for deployment
 
-    mint_new_counter();; mint new counter
+    mint_new_counter(sender_address); ;; mint new counter
 
 }
