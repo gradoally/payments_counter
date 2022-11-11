@@ -43,6 +43,37 @@ get_seqno_by_addr () {
 
 }
 
+get_counter_num_by_addr () { 
+
+    net=$1
+    addr=$2
+    output_var_name=$3
+
+    string_output_var_name="$output_var_name"
+
+    for i in {1..30}
+    do
+
+        echo "Attempt to get counter_num №$i"
+        if [ $net = "mainnet" ]; then
+            eval $string_output_var_name=$($path_to_lite_client_binaries -v 3 --timeout 3 -C $mainnet -v 2 -c "runmethod $addr 85378" | awk -v FS="(result: | remote)" '{print $2}' | tr -dc '0-9')
+        elif [ $net = "testnet" ]; then
+            eval $string_output_var_name=$($path_to_lite_client_binaries -v 3 --timeout 3 -C $testnet -v 2 -c "runmethod $addr 85378" | awk -v FS="(result: | remote)" '{print $2}' | tr -dc '0-9')
+        else
+            echo "Second argument is wrong. Should use testnet or mainnet"
+        fi
+
+        if [ ${!string_output_var_name} ];
+        then
+            echo "Success in attempt #$i"
+            echo 'Counter num saved to variable $'"${string_output_var_name}"
+            break
+        fi
+
+    done
+
+}
+
 create_fift_from_func_with_args () {
 
     input_func_file=$1
@@ -50,21 +81,6 @@ create_fift_from_func_with_args () {
     arguments=${@:3:$#}
 
     $path_to_func_binaries -SPA -o $output_fift_file $arguments $input_func_file
-
-}
-
-compile_collection () {
-
-    base_uri=$1
-    collection_uri=$2
-    royalty_addr=$3
-    owner_addr=$4
-    royalty_numerator=$5
-
-    create_fift_from_func_with_args $func_nft_contract src/build/nft/nft-item-editable.fif $func_stdlib $func_params $func_op_codes
-    create_fift_from_func_with_args $func_collection_contract src/build/collection/nft-collection-editable.fif $func_stdlib $func_params $func_op_codes
-
-    $path_to_fift_binaries -I $fift_libs -I $fift_contracts -s src/compile-collection.fif $base_uri $collection_uri $deploy_wallet_addr $deploy_wallet_addr $royalty_numerator # Запускаем скрипт, который создает boc-файл контракта минтера коллекций
 
 }
 
@@ -157,6 +173,16 @@ elif [ $1 = "deploy-counter" ]; then
     send_ton_to_addr $counter_addr $deploy_wallet_seqno 0.05 $net
     sleep 20
     send_boc $net src/build/counter/counter_contract_query.boc $action_name
+
+# sh use.sh get-counter-num [net] [counter_addr]
+elif [ $1 = "get-counter-num" ]; then
+
+    action_name=$1
+    net=$2
+    counter_addr=$3
+
+    get_counter_num_by_addr $net $counter_addr counter_num
+    echo "Counter num: $counter_num"
 
 # Wrong first argument
 else
