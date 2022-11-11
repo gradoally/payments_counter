@@ -25,6 +25,7 @@ func_op_codes=utils/op-codes.fc # выносим op-коды в этот фай�
 func_collection_contract=src/contracts/nft-collection-editable.fc # контракт коллекции
 func_nft_contract=src/contracts/nft-item-editable.fc
 func_minter_contract=src/contracts/nft-collection-minter.fc # контракт минтера коллекции
+func_counter_contract=src/contracts/counter-contract.fc # контракт счетчика
 
 # Пути к папкам
 fift_contracts=src/build # сюда скомпилируются fift-файлы

@@ -1,0 +1,65 @@
+#!/usr/bin/fift -s
+"TonUtil.fif" include
+"Asm.fif" include
+
+// $1: admin_addr
+// $2: counter_num
+
+<{
+
+  SETCP0 ACCEPT
+  now PUSHINT
+  "counter/counter_contract.fif" include PUSHREF SETCODE
+  
+}>c =: counter_contract_code
+
+$1 $>smca 0= abort"Specify valid admin addr"
+constant admin_flags
+constant admin_addr
+constant admin_wc
+
+."Admin address: " admin_wc admin_addr admin_flags .Addr cr
+
+<b
+  admin_wc admin_addr Addr, // admin_address
+  $2 parse-int 64 u, // counter_num
+b>
+
+<b 
+  
+  b{001} s, 
+  counter_contract_code ref, 
+  b{1} s,
+  swap ref, // storage
+  null dict, 
+  
+b>
+
+dup =: state_init
+dup hashu admin_wc swap 2constant contract_addr
+
+contract_addr .addr cr
+
+contract_addr "src/build/counter/counter-contract.addr" save-address-verbose
+
+."Counter contract non-bounceable address (for init): " contract_addr 7 .Addr cr
+."Counter contract bounceable address (for later access): " contract_addr 6 .Addr cr
+
+<b b> =: init_message
+
+
+<b 
+
+  b{1000100} s, 
+  contract_addr addr,
+  b{000010} s, 
+  state_init <s s, 
+  b{0} s,
+  init_message <s s,
+
+b>
+
+2 boc+>B
+
+"src/build/counter/counter_contract_query.boc" tuck B>file
+."(Saved counter_contract creating query to file " type .")" cr

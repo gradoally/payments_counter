@@ -1,0 +1,104 @@
+"Asm.fif" include
+// automatically generated from `lib/func/stdlib.fc` `utils/params.fc` `utils/op-codes.fc` `src/contracts/counter-contract.fc` 
+PROGRAM{
+  DECLPROC force_chain
+  DECLPROC load_data
+  DECLPROC store_data
+  DECLPROC send_ton
+  DECLPROC recv_internal
+  85378 DECLMETHOD get_counter_num
+  force_chain PROC:<{
+    //  addr
+    REWRITESTDADDR	//  _8 _9
+    DROP	//  wc
+    0 PUSHINT	//  wc _5
+    EQUAL	//  _6
+    333 THROWIFNOT
+  }>
+  load_data PROC:<{
+    // 
+    c4 PUSH	//  _1
+    CTOS	//  ds
+    LDMSGADDR	//  _3 ds
+    64 LDU	//  _3 _11 _10
+    DROP	//  _3 _5
+  }>
+  store_data PROC:<{
+    //  new_admin_addr new_counter_num
+    NEWC
+    ROT	//  new_counter_num _2 new_admin_addr
+    STSLICER	//  new_counter_num _3
+    64 STU	//  _5
+    ENDC	//  _6
+    c4 POP
+  }>
+  send_ton PROC:<{
+    //  to_address amount send_mode
+    0 PUSHINT	//  to_address amount send_mode _4=0
+    16 PUSHINT	//  to_address amount send_mode _4=0 _5=16
+    NEWC	//  to_address amount send_mode _4=0 _5=16 _6
+    6 STU	//  to_address amount send_mode _4=0 _8
+    s0 s4 XCHG2	//  _4=0 amount send_mode _8 to_address
+    STSLICER	//  _4=0 amount send_mode _9
+    ROT	//  _4=0 send_mode _9 amount
+    STVARUINT16	//  _4=0 send_mode _10
+    s1 s2 XCHG	//  send_mode _4=0 _10
+    107 STU	//  send_mode _24
+    ENDC	//  send_mode msg
+    SWAP	//  msg send_mode
+    SENDRAWMSG
+  }>
+  recv_internal PROC:<{
+    //  msg_value in_msg_full in_msg_body
+    SWAP	//  msg_value in_msg_body in_msg_full
+    CTOS	//  msg_value in_msg_body cs
+    4 LDU	//  msg_value in_msg_body flags cs
+    SWAP
+    1 PUSHINT	//  msg_value in_msg_body cs flags _9=1
+    AND	//  msg_value in_msg_body cs _10
+    IFJMP:<{	//  msg_value in_msg_body cs
+      3 BLKDROP	// 
+    }>	//  msg_value in_msg_body cs
+    LDMSGADDR	//  msg_value in_msg_body _48 _47
+    DROP	//  msg_value in_msg_body sender_address
+    DUP	//  msg_value in_msg_body sender_address sender_address
+    force_chain CALLDICT
+    s2 PUSH
+    100000000 PUSHINT	//  msg_value in_msg_body sender_address msg_value _15=100000000
+    LESS	//  msg_value in_msg_body sender_address _16
+    IFJMP:<{	//  msg_value in_msg_body sender_address
+      NIP	//  msg_value sender_address
+      SWAP
+      64 PUSHINT	//  sender_address msg_value _17=64
+      send_ton INLINECALLDICT
+    }>	//  msg_value in_msg_body sender_address
+    OVER	//  msg_value in_msg_body sender_address in_msg_body
+    SEMPTY	//  msg_value in_msg_body sender_address _19
+    IFJMP:<{	//  msg_value in_msg_body sender_address
+      2DROP	//  msg_value
+      load_data CALLDICT	//  msg_value _49 _50
+      DROP	//  msg_value admin_addr
+      s0 s1 PUXC
+      64 PUSHINT	//  admin_addr admin_addr msg_value _23=64
+      send_ton INLINECALLDICT
+      DROP	// 
+    }>	//  msg_value in_msg_body sender_address
+    s2 POP	//  sender_address in_msg_body
+    32 LDU	//  sender_address _52 _51
+    DROP	//  sender_address op
+    1 EQINT	//  sender_address _34
+    IFJMP:<{	//  sender_address
+      load_data CALLDICT	//  sender_address _53 _54
+      DROP	//  sender_address admin_addr
+      SWAP	//  admin_addr sender_address
+      SDEQ	//  _39
+      401 THROWIFNOT
+    }>	//  sender_address
+    DROP	// 
+  }>
+  get_counter_num PROC:<{
+    // 
+    load_data CALLDICT	//  _3 _4
+    NIP	//  counter_num
+  }>
+}END>c

@@ -2,13 +2,6 @@
 ;;
 ;; counter_contract_code
 
-int workchain() asm "0 PUSHINT";
-
-() force_chain(slice addr) impure {
-  (int wc, _) = parse_std_addr(addr);
-  throw_unless(333, wc == workchain());
-}
-
 (cell) load_data() {
     slice ds = get_data().begin_parse();
     return (
@@ -16,7 +9,7 @@ int workchain() asm "0 PUSHINT";
     );
 } 
 
-() mint_new_counter(admin_addr, amount) {
+() mint_new_counter(slice admin_addr, int amount, int send_mode) impure inline {
 
     cell data = 
         begin_cell()
@@ -56,7 +49,7 @@ int workchain() asm "0 PUSHINT";
 }
 
 
-() recv_internal(cell in_msg_full, slice in_msg_body) impure {
+() recv_internal(int msg_value, cell in_msg_full, slice in_msg_body) impure {
 
     slice cs = in_msg_full.begin_parse();
 
@@ -70,6 +63,6 @@ int workchain() asm "0 PUSHINT";
 
     ;; check amount sufficient for deployment
 
-    mint_new_counter(sender_address); ;; mint new counter
+    mint_new_counter(sender_address, msg_value, 64); ;; mint new counter
 
 }
