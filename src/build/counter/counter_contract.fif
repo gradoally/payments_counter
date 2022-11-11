@@ -59,40 +59,43 @@ PROGRAM{
     IFJMP:<{	//  msg_value in_msg_body cs
       3 BLKDROP	// 
     }>	//  msg_value in_msg_body cs
-    LDMSGADDR	//  msg_value in_msg_body _48 _47
+    LDMSGADDR	//  msg_value in_msg_body _53 _52
     DROP	//  msg_value in_msg_body sender_address
     DUP	//  msg_value in_msg_body sender_address sender_address
     force_chain CALLDICT
-    s2 PUSH
-    100000000 PUSHINT	//  msg_value in_msg_body sender_address msg_value _15=100000000
-    LESS	//  msg_value in_msg_body sender_address _16
-    IFJMP:<{	//  msg_value in_msg_body sender_address
-      NIP	//  msg_value sender_address
-      SWAP
-      64 PUSHINT	//  sender_address msg_value _17=64
+    s0 s2 XCHG
+    100000000 PUSHINT	//  sender_address in_msg_body msg_value _15=100000000
+    LESS	//  sender_address in_msg_body _16
+    IFJMP:<{	//  sender_address in_msg_body
+      DROP	//  sender_address
+      0 PUSHINT	//  sender_address _17=0
+      64 PUSHINT	//  sender_address _17=0 _18=64
       send_ton INLINECALLDICT
-    }>	//  msg_value in_msg_body sender_address
-    OVER	//  msg_value in_msg_body sender_address in_msg_body
-    SEMPTY	//  msg_value in_msg_body sender_address _19
-    IFJMP:<{	//  msg_value in_msg_body sender_address
-      2DROP	//  msg_value
-      load_data CALLDICT	//  msg_value _49 _50
-      DROP	//  msg_value admin_addr
-      s0 s1 PUXC
-      64 PUSHINT	//  admin_addr admin_addr msg_value _23=64
+    }>	//  sender_address in_msg_body
+    DUP	//  sender_address in_msg_body in_msg_body
+    SEMPTY	//  sender_address in_msg_body _20
+    IFJMP:<{	//  sender_address in_msg_body
+      2DROP	// 
+      load_data CALLDICT	//  _54 _55
+      DROP	//  admin_addr
+      DUP
+      0 PUSHINT
+      64 PUSHINT	//  admin_addr admin_addr _24=0 _25=64
       send_ton INLINECALLDICT
       DROP	// 
-    }>	//  msg_value in_msg_body sender_address
-    s2 POP	//  sender_address in_msg_body
-    32 LDU	//  sender_address _52 _51
+    }>	//  sender_address in_msg_body
+    32 LDU	//  sender_address _57 _56
     DROP	//  sender_address op
-    1 EQINT	//  sender_address _34
+    1 EQINT	//  sender_address _36
     IFJMP:<{	//  sender_address
-      load_data CALLDICT	//  sender_address _53 _54
+      load_data CALLDICT	//  sender_address _58 _59
       DROP	//  sender_address admin_addr
-      SWAP	//  admin_addr sender_address
-      SDEQ	//  _39
+      OVER	//  sender_address admin_addr sender_address
+      SDEQ	//  sender_address _41
       401 THROWIFNOT
+      0 PUSHINT	//  sender_address _47=0
+      64 PUSHINT	//  sender_address _47=0 _48=64
+      send_ton INLINECALLDICT
     }>	//  sender_address
     DROP	// 
   }>
