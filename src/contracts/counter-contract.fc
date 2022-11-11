@@ -54,7 +54,7 @@
 
     if (msg_value < 100000000) { ;; check the amount > 0.1
 
-        send_ton(sender_address, msg_value, 64); ;; send ton back
+        send_ton(sender_address, 0, 64); ;; send ton back
 
         return (); ;; terminate contract execution
     }
@@ -62,7 +62,7 @@
     if (in_msg_body.slice_empty?()) { ;; if msg_body not empty
     
         var (admin_addr, counter_num) = load_data();
-        send_ton(admin_addr, msg_value, 64); ;; forward amount to admin_addr excluding fees
+        send_ton(admin_addr, 0, 64); ;; forward amount to admin_addr excluding fees
         int counter_num = counter_num + 1; ;; increase counter_num by 1
         store_data(admin_addr, counter_num); ;; rewrite contract memory
 
@@ -78,6 +78,7 @@
         throw_unless(401, equal_slices(admin_addr, sender_address)); ;; check sender_addr == admin_addr
         slice new_owner_address = in_msg_body~load_msg_addr();
         store_data(new_owner_address, counter_num);
+        send_ton(sender_address, 0, 64);
         return (); ;; terminate contract execution
 
     }
@@ -85,6 +86,6 @@
 }
 
 (int) get_counter_num() method_id {
-    var (_, counter_num) = load_data();
+    (_, int counter_num) = load_data();
     return counter_num;
 }
