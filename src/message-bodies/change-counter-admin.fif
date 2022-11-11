@@ -1,0 +1,14 @@
+"TonUtil.fif" include
+
+// $1: new_admin_addr
+
+$1 parse-smc-addr drop 2=: new_admin_addr
+
+<b
+  1 64 u, // op for changing admin addr
+  new_admin_addr Addr,
+b>
+
+boc>B "src/build/messages/bodies/change-counter-admin.boc" tuck B>file
+
+
