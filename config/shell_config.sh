@@ -26,6 +26,7 @@ func_collection_contract=src/contracts/nft-collection-editable.fc # контра
 func_nft_contract=src/contracts/nft-item-editable.fc
 func_minter_contract=src/contracts/nft-collection-minter.fc # контракт минтера коллекции
 func_counter_contract=src/contracts/counter-contract.fc # контракт счетчика
+func_counter_contract_minter=src/contracts/counter-contract-minter.fc
 
 # Пути к папкам
 fift_contracts=src/build # сюда скомпилируются fift-файлы
