@@ -165,7 +165,7 @@ Use the pattern below to deploy a counter-contract off-chain.
 Example:
 
 ```bash
-./use.sh get-counter-admin testnet EQD57OL7n9KjwN5vxrW5KOJ-WIQTEw85mSMXmkdcSS_eLzi7 0
+./use.sh deploy-counter testnet EQD57OL7n9KjwN5vxrW5KOJ-WIQTEw85mSMXmkdcSS_eLzi7 0
 ```
 
 ### Change counter admin
