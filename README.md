@@ -1,10 +1,10 @@
 # TON Payments Counter
 
-This library represents the sollution to the following task:
+This library represents the sollution of the task, that follows. You can find the resulting contract deloyed [here](https://testnet.tonscan.org/address/EQAIvGNr0v1aht8AbHr0yAi6DeTvtsRihTGpmltGSwQ1XTO7)
 
 ## Task
 
-Task: implement a proxy that count transactions
+Implement a proxy that count transactions
 
 Description: Implement a system of smart contracts that count how many times an user send a payment to a certain user, and route the payment to the owner of the smart contract(s). A payment, to be accepted, should have an arbitrary body (empty is OK) and msg_value greater than 0.1 TON. For user perspective, the contract should work fine with normal transfers from common TON Wallets. For any user, the recipient should be always the same.
 
@@ -20,9 +20,13 @@ eta: 2 days
 
 ## Installation
 
+### Step 0: Check bash version
+
+Please use bash version 3.2.57(1)-release to execute this lib.
+
 ### Step 1: Check ton-binaries
 
-By default this library was made to run on Ubuntu 18.04 and this library contains ton-binaries for it, but if you want to use this library on other OS download nessesary TON pre-build [here](https://github.com/ton-blockchain/ton/actions?query=branch%3Amaster+is%3Acompleted) and change directories to lite-client, fift and func compilers on lines 6-8 of [shell_config.sh](config/shell_config.sh) as follows:
+Download nessesary TON pre-build [here](https://github.com/ton-blockchain/ton/actions?query=branch%3Amaster+is%3Acompleted) and change directories to lite-client, fift and func compilers on lines 6-8 of [shell_config.sh](config/shell_config.sh) as follows:
 
 ```bash
 path_to_func_binaries=YOUR_PATH # func
@@ -32,12 +36,12 @@ path_to_lite_client_binaries=YOUR_PATH # lite-client
 
 ### Step 2: Compile deploy-wallet
 
-First you need to compile your deploy wallet, that will send internal messages to other smart-contracts in the architecture and will be the owner of the contracts. After compiling the wallet you will find files with private key, wallet address and resulting BOC-file that we will send to blockchain on deploy in the directory [src/build/wallet/](src/build/wallet/)
+First you need to compile your deploy wallet, that will send internal messages to other smart-contracts and load coins on them. After compiling the wallet you will find files with private key, wallet address and resulting BOC-file that we will send to blockchain on deploy in the directory [src/build/wallet/](src/build/wallet/)
 
 Example:
 
 ```bash
-sudo sh use.sh compile-wallet
+./use.sh compile-wallet
 ```
 
 ### Step 3: Load TON's
@@ -52,7 +56,7 @@ You will find the address of your future wallet (where you need to send coins) i
 
 Use command below to deploy wallet:
 
-> sudo sh use.sh deploy-wallet [net]
+> ./use.sh deploy-wallet [net]
 
 | Argument | Description |
 | --- | --- |
@@ -61,10 +65,8 @@ Use command below to deploy wallet:
 Example:
 
 ```bash
-sudo sh use.sh deploy-wallet testnet
+./use.sh deploy-wallet testnet
 ```
-
-<a name="deploy_collection"/></a>
 
 ## Usage
 
@@ -72,4 +74,18 @@ sudo sh use.sh deploy-wallet testnet
 2. **Counter-contracts** is a smart-contract of particular counter that has admin_addr and counter_num in it's storage
 3. **Counter-contract-minter** is a smart-contract that is able to mint counter-contracts on-chain and has counter-contract code in it's storage
 
-### 
+### Deploy counter-minter
+
+This pattern will compile both counter-contract and counter-contract-minter, create a BOC-query for minting counter-contract-minter, and send BOC to blockchain. You can get the address of the newly deployed contract in the output.
+
+> ./use.sh deploy-counter-minter [net]
+
+| Argument | Description |
+| --- | --- |
+| [net] | Stipulate "testnet" or "mainnet" |
+
+Example:
+
+```bash
+./use.sh deploy-counter-minter testnet
+```
