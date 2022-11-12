@@ -1,0 +1,65 @@
+#!/usr/bin/fift -s
+"TonUtil.fif" include
+"Asm.fif" include
+
+<{
+
+  SETCP0 ACCEPT
+  now PUSHINT
+  "counter-minter/counter-contract-minter.fif" include PUSHREF SETCODE
+  
+}>c =: counter-contract-minter-code
+
+<{
+
+  SETCP0 ACCEPT
+  now PUSHINT
+  "counter/counter-contract.fif" include PUSHREF SETCODE
+  
+}>c =: counter-contract-code
+
+<b 
+  counter-contract-code ref, // collection code
+b> =: contract_storage
+
+0 =: wc
+
+<b 
+  
+  b{001} s, 
+  counter-contract-minter-code ref, 
+  b{1} s,
+  contract_storage ref, 
+  null dict, 
+  
+b>
+
+dup =: state_init
+dup hashu wc swap 2constant contract_addr
+
+contract_addr .addr cr
+
+contract_addr "src/build/counter-minter/counter-contract-minter.addr" save-address-verbose
+
+."Counter minter non-bounceable address (for init): " contract_addr 7 .Addr cr
+."Counter minter bounceable address (for later access): " contract_addr 6 .Addr cr
+
+
+<b b> =: init_message
+
+
+<b 
+
+  b{1000100} s, 
+  contract_addr addr,
+  b{000010} s, 
+  state_init <s s, 
+  b{0} s,
+  init_message <s s,
+
+b>
+
+2 boc+>B
+
+"src/build/counter-minter/counter-contract-minter-query.boc" tuck B>file
+."(Saved counter-minter contract creating query to file " type .")" cr
