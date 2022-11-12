@@ -240,6 +240,23 @@ elif [ $1 = "get-counter-admin" ]; then
     get_counter_admin_by_addr $net $counter_addr counter_admin
     echo "Counter admin: $counter_admin"
 
+# sh use.sh deploy-counter-minter [net]
+elif [ $1 = "deploy-counter-minter" ]; then
+
+    action_name=$1
+    net=$2
+
+    create_fift_from_func_with_args $func_counter_contract src/build/counter/counter-contract.fif $func_stdlib $func_params $func_op_codes
+    create_fift_from_func_with_args $func_counter_contract_minter src/build/counter-minter/counter-contract-minter.fif $func_stdlib $func_params $func_op_codes
+    $path_to_fift_binaries -I $fift_libs -I $fift_contracts -s src/compile-counter-contract-minter.fif # launch script that creates a boc-file
+    get_addr_from_file src/build/wallet/deploy-wallet.addr deploy_wallet_addr # get deploy-wallet addr and saves it to $deploy_wallet_addr
+    get_seqno_by_addr $net $deploy_wallet_addr deploy_wallet_seqno
+    get_addr_from_file src/build/counter-minter/counter-contract-minter.addr counter_contract_minter_addr
+    send_ton_to_addr $counter_contract_minter_addr $deploy_wallet_seqno 0.1 $net
+    sleep 10
+    send_boc $net src/build/counter-minter/counter-contract-minter-query.boc $action_name
+
+
 # Wrong first argument
 else
     echo "First argument is wrong! Please look readme.md"
