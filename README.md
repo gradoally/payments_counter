@@ -3,12 +3,19 @@
 This library represents the sollution of the task, that follows. You can find the resulting contract deloyed on testnet [here](https://testnet.tonscan.org/address/EQAIvGNr0v1aht8AbHr0yAi6DeTvtsRihTGpmltGSwQ1XTO7)
 
 [use.sh](use.sh) - the main file to run the methods of the library
+
 [src/contracts/](src/contracts/) - you can find FunC code of the contracts here
+
 [compile-counter-contract-minter.fif](src/compile-counter-contract-minter.fif) - mint script for counter-contract-minter with counter-contract in the storage
+
 [compile-counter.fif](src/compile-counter.fif) - compilation script to deploy an individual counter off-chain
+
 [external-to-wallet.fif](src/external-to-wallet.fif) - script to interact with deploy-wallet
+
 [get-addr-from-file.fif](src/get-addr-from-file.fif) - a small script to get the address of deploy wallet from file for futher interactions
+
 [new-wallet.fif](src/new-wallet.fif) - a script to mint a new deploy-wallet
+
 [change-counter-admin.fif](src/message-bodies/change-counter-admin.fif) - a message body pattern for a message to change counter admin address
 
 ## Task
