@@ -110,7 +110,7 @@ Example:
 
 ### Create a personal counter
 
-In order to create your personal counter just send any amount more that 0.1 TON on counter-contract-minter. I will mint a new counter with the sender's address as an admin.
+In order to create your personal counter just send any amount more that 0.1 TON on counter-contract-minter. It will mint a new counter with the sender's address as an admin.
 
 ### Get counter_num
 
