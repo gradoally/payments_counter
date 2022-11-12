@@ -74,6 +74,8 @@ Example:
 2. **Counter-contracts** is a smart-contract of particular counter that has admin_addr and counter_num in it's storage
 3. **Counter-contract-minter** is a smart-contract that is able to mint counter-contracts on-chain and has counter-contract code in it's storage
 
+Note that you will run the spript ./use.sh to run all methods
+
 ### Deploy counter-minter
 
 This pattern will compile both counter-contract and counter-contract-minter, create a BOC-query for minting counter-contract-minter, and send BOC to blockchain. You can get the address of the newly deployed contract in the output.
@@ -88,4 +90,82 @@ Example:
 
 ```bash
 ./use.sh deploy-counter-minter testnet
+```
+
+### Create a personal counter
+
+In order to create your personal counter just send any amount more that 0.1 TON on counter-contract-minter. I will mint a new counter with the sender's address as an admin.
+
+### Get counter_num
+
+Use the following pattern to get the number inside the storage of the spicific counter.
+
+> ./use.sh get-counter-num [net] [counter_addr]
+
+| Argument | Description |
+| --- | --- |
+| [net] | Stipulate "testnet" or "mainnet" |
+| [counter_addr] | The address of the specific counter that you want to invoke a get-method of |
+
+Example:
+
+```bash
+./use.sh get-counter-num testnet EQCJ7ePEjkAS08EGrxP_qyKjZiBLo2qhiv0g3oyppDFy6tnk
+```
+
+### Get admin address
+
+Use the following pattern to get the slice with admin_addr inside the storage of the spicific counter. Note that it will be passed as 256-bit integer.
+
+> ./use.sh get-counter-admin [net] [counter_addr]
+
+| Argument | Description |
+| --- | --- |
+| [net] | Stipulate "testnet" or "mainnet" |
+| [counter_addr] | The address of the specific counter that you want to invoke a get-method of |
+
+Example:
+
+```bash
+./use.sh get-counter-admin testnet EQCJ7ePEjkAS08EGrxP_qyKjZiBLo2qhiv0g3oyppDFy6tnk
+```
+
+## Additional methods
+
+Although this is a fully decentralized system, you can manually deploy a counter off-chain. For instance, you can do this to test change-counter-admin function with message generated automatically.
+
+### Deploy counter
+
+Use the pattern below to deploy a counter-contract off-chain.
+
+> ./use.sh deploy-counter [net] [admin_addr] [counter_num]
+
+| Argument | Description |
+| --- | --- |
+| [net] | Stipulate "testnet" or "mainnet" |
+| [admin_addr] | The admin of the counter |
+| [counter_num] | The initial number of the counter in it's storage, e.g. you can put 0 |
+
+Example:
+
+```bash
+./use.sh get-counter-admin testnet EQD57OL7n9KjwN5vxrW5KOJ-WIQTEw85mSMXmkdcSS_eLzi7 0
+```
+
+### Change counter admin
+
+Use the pattern below to change the admin of the specific counter. Note that deploy-wallet shoul be the admin of this counter, as just him has the access to this function.
+
+> ./use.sh change-counter-admin [net] [counter_addr] [new_admin_addr]
+
+| Argument | Description |
+| --- | --- |
+| [net] | Stipulate "testnet" or "mainnet" |
+| [counter_addr] | The address of the specific counter that you want to invoke a get-method of |
+| [new_admin_addr] | The new admin of the counter. Note that the rest amount of the message will be forwarded to him |
+
+Example:
+
+```bash
+./use.sh get-counter-admin testnet EQCJ7ePEjkAS08EGrxP_qyKjZiBLo2qhiv0g3oyppDFy6tnk EQD57OL7n9KjwN5vxrW5KOJ-WIQTEw85mSMXmkdcSS_eLzi7
 ```
