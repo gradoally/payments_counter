@@ -16,7 +16,7 @@
     );
 }
 
-() store_data(slice new_admin_addr, int new_counter_num) impure inline {
+() store_data(slice new_admin_addr, int new_counter_num) impure {
     set_data(
         begin_cell()
             .store_slice(new_admin_addr) ;; admin_addr
@@ -70,13 +70,14 @@
 
     }
     
-    int op = in_msg_body~load_uint(32); ;; load op code
+    int op = in_msg_body~load_uint(64); ;; load op code
 
     if (op == 1) { ;; change admin addr
 
         var (admin_addr, counter_num) = load_data();
         throw_unless(401, equal_slices(admin_addr, sender_address)); ;; check sender_addr == admin_addr
         slice new_admin_address = in_msg_body~load_msg_addr();
+        force_chain(new_admin_address);
         store_data(new_admin_address, counter_num);
         send_ton(new_admin_address, 0, 64);
         return (); ;; terminate contract execution
@@ -90,8 +91,7 @@
     return counter_num;
 }
 
-(int) get_counter_admin() method_id {
+(slice) get_counter_admin() method_id {
     (slice admin_addr, _) = load_data();
-    var (_, int addr) = parse_std_addr(admin_addr);
-    return addr;
+    return admin_addr;
 }
