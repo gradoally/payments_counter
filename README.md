@@ -183,5 +183,5 @@ Use the pattern below to change the admin of the specific counter. Note that dep
 Example:
 
 ```bash
-./use.sh get-counter-admin testnet EQCJ7ePEjkAS08EGrxP_qyKjZiBLo2qhiv0g3oyppDFy6tnk EQD57OL7n9KjwN5vxrW5KOJ-WIQTEw85mSMXmkdcSS_eLzi7
+./use.sh change-counter-admin testnet EQCJ7ePEjkAS08EGrxP_qyKjZiBLo2qhiv0g3oyppDFy6tnk EQD57OL7n9KjwN5vxrW5KOJ-WIQTEw85mSMXmkdcSS_eLzi7
 ```
