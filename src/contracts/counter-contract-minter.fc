@@ -17,8 +17,7 @@
             .store_uint(0, 64) ;; counter_num
         .end_cell();
 
-    var counter_contract_code = load_data()
-
+    var counter_contract_code = load_data();
 
     cell state_init = 
         begin_cell()
@@ -61,8 +60,18 @@
     slice sender_address = cs~load_msg_addr();
     force_chain(sender_address); ;; check workchain = 0
 
-    ;; check amount sufficient for deployment
+    if (msg_value < 100000000) { ;; check the amount > 0.1
 
-    mint_new_counter(sender_address, msg_value, 64); ;; mint new counter
+        send_ton(sender_address, 0, 64); ;; send ton back
 
+        return (); ;; terminate contract execution
+    }
+
+    mint_new_counter(sender_address, 50000000, 0); ;; mint new counter with 0.05 TON
+    
+    {-
+    
+    send_ton(sender_address, 0, 64);
+    
+    -}
 }
