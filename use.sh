@@ -226,7 +226,7 @@ elif [ $1 = "change-counter-admin" ]; then
     get_addr_from_file src/build/wallet/deploy-wallet.addr deploy_wallet_addr # get deploy-wallet addr and saves it to $deploy_wallet_addr
     $path_to_fift_binaries -I $fift_libs -L $fift_cli -s src/message-bodies/change-counter-admin.fif $new_admin_addr # Create boc-file of message body
     get_seqno_by_addr $net $deploy_wallet_addr deploy_wallet_seqno
-    $path_to_fift_binaries -I $fift_libs -s src/external-to-wallet.fif counter_wallet $counter_addr $deploy_wallet_seqno .05 -B src/build/messages/bodies/change-counter-admin.boc -n src/build/messages/change-counter-admin-full # Add message body to message and create boc-file of full message
+    $path_to_fift_binaries -I $fift_libs -s src/external-to-wallet.fif counter_wallet $counter_addr $deploy_wallet_seqno .15 -B src/build/messages/bodies/change-counter-admin.boc -n src/build/messages/change-counter-admin-full # Add message body to message and create boc-file of full message
     msg_directory="src/build/messages/change-counter-admin-full.boc"
     send_boc $net $msg_directory $action_name
 
