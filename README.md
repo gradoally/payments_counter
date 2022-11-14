@@ -22,7 +22,7 @@ This library represents the sollution of the task, that follows. You can find th
 
 Implement a proxy that count transactions
 
-Description: Implement a system of smart contracts that count how many times an user send a payment to a certain user, and route the payment to the owner of the smart contract(s). A payment, to be accepted, should have an arbitrary body (empty is OK) and msg_value greater than 0.1 TON. For user perspective, the contract should work fine with normal transfers from common TON Wallets. For any user, the recipient should be always the same.
+Description: Implement a system of smart contracts that count how many times users send a payments to a certain user, and route the payment to the owner of the smart contract(s). A payment, to be accepted, should have an arbitrary body (empty is OK) and msg_value greater than 0.1 TON. For user perspective, the contract should work fine with normal transfers from common TON Wallets. For any user, the recipient should be always the same.
 
 Requirements:
 - the admin of the proxy should be able to change the admin address (using opcode = 1)
